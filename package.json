@@ -1,0 +1,15 @@
+{
+  "name": "ngTestGenerator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Yair Haimovitch <yair@coralogix.com> (http://www.coralogix.com/)",
+  "license": "ISC",
+  "dependencies": {
+    "esprima": "^2.2.0",
+    "lodash": "^3.9.3"
+  }
+}
