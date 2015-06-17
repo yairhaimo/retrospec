@@ -1,9 +1,56 @@
-// FACTORY_EXTERNAL
+var Utils = require('../utils');
 
-var myFact2 = function(SOME_SERVICE) {
-  return {age: 32};
+var schema = module.exports = {
+  id: {
+    name: 'arguments[1].elements[0].value',
+    type: Utils.TYPES.FACTORY,
+    subType: Utils.SUBTYPES.EXTERNAL_DI,
+    conditions: [
+      {
+        path: 'type',
+        value: 'CallExpression'
+      },
+      {
+        path: 'callee.property.name',
+        value: 'factory'
+      },
+      {
+        path: 'arguments[1].type',
+        value: 'ArrayExpression'
+      }
+    ]
+  },
+  references: [
+    {
+      conditions: [
+        {
+          path: 'id.name',
+          value: '{{arguments[1].elements[#last#].name}}',
+        }
+      ],
+      properties: {
+        name: {
+          path: 'id.name'
+        },
+        bodyType: {
+          path: 'init.body.body[0].type'
+        }
+      }
+    },
+    {
+      conditions: [],
+      properties: {
+        name: {
+          path: 'arguments[1].elements[0].value'
+          // path: 'arguments[1].elements',
+          // transform: function(val) {
+          //   return val.splice(0, val.length-1);
+          // }
+        }
+      }
+    }
+  ]
 };
-app.factory('MyFact2', ['SOME_SERVICE', myFact2]);
 
 
 // {

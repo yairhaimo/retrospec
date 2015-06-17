@@ -1,4 +1,8 @@
+var Utils = require('../utils');
+
 var schema = module.exports = {
+  type: Utils.TYPES.CONTROLLER,
+  subType: Utils.SUBTYPES.EXTERNAL,
   id: {
     type: 'CONTROLLER_EXTERNAL',
     conditions: [
@@ -16,9 +20,14 @@ var schema = module.exports = {
       }
     ]
   },
-  properties: {
-    name: {
-      path:'arguments[0].value'
+  references: [
+    {
+      conditions: [],
+      properties: {
+        name: {
+          path:'arguments[0].value'
+        }
+      }
     }
-  }
+  ]
 };

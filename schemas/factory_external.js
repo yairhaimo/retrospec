@@ -1,6 +1,9 @@
+var Utils = require('../utils');
+
 var schema = module.exports = {
   id: {
-    type: 'FACTORY_EXTERNAL',
+    type: Utils.TYPES.FACTORY,
+    subType: Utils.SUBTYPES.EXTERNAL,
     conditions: [
       {
         path: 'type',
@@ -11,25 +14,37 @@ var schema = module.exports = {
         value: 'factory'
       },
       {
-        path: 'arguments[1].type',
+        path: 'arguments[#last#].type',
         value: 'Identifier'
       }
     ]
   },
-  properties: {
-    name: {
-      path:'arguments[0].value'
+  references: [
+    {
+  // base: {
+  //   path: 'declarations[0].id.name',
+  //   value: '{{arguments[#last#].name}}'
+  // },
+      conditions: [],
+      properties: {
+        name: {
+          path: 'declarations[0].id.name'
+        },
+        bodyType: {
+          path: 'declarations[0].init.body.body[0].type'
+        }
+      }
     }
-  }
+  ]
 };
 
-
+//
 // var myFact2 = function() {
 //   return {age: 32};
 // };
 // app.factory('myFact2', myFact2);
 
-
+//
 //  {
 //    "type": "ExpressionStatement",
 //    "expression": {
@@ -59,7 +74,7 @@ var schema = module.exports = {
 //      ]
 //    }
 //  },
-
+//
 // {
 //    "type": "VariableDeclaration",
 //    "declarations": [
