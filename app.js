@@ -1,5 +1,4 @@
 // retroSpec
-
 var esprima = require('esprima');
 var fs = require('fs');
 var Utils = require('./utils');
@@ -17,7 +16,7 @@ Utils.walk(dirName, function(err, results) {
     try {
           content = fs.readFileSync(fileName, 'utf-8');
           structure = esprima.parse(content, { tolerant: true });
-          // console.log(JSON.stringify(structure, null, 2));
+          console.log(JSON.stringify(structure, null, 2));
 
           // create entities
           Utils.traverse(structure, function (node) {
@@ -57,6 +56,6 @@ Utils.walk(dirName, function(err, results) {
   });
 
   _.forIn(entities, function(entity, key) {
-    console.log('****' + key, entity);
+    console.log('****' + key, entity, '\n');
   });
 });

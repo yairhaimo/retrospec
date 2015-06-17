@@ -7,6 +7,8 @@ var myFact3 = function() {
     return x;
   };
   Factory.address = 'Petah Tikva';
+  var data = {name: 'yair'};
+  Factory.data = data;
 
   return Factory;
 };
