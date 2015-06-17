@@ -10,65 +10,53 @@ var dirName = 'data';
 var entities = {};
 
 Utils.walk(dirName, function(err, results) {
+  // TODO: refactor complexity of loops
   results.forEach(function(fileName) {
-    var content, structure;
+    var content, structure, componentId;
 
     try {
           content = fs.readFileSync(fileName, 'utf-8');
           structure = esprima.parse(content, { tolerant: true });
-
           // console.log(JSON.stringify(structure, null, 2));
 
+          // create entities
           Utils.traverse(structure, function (node) {
             schemas.forEach(function(schema) {
               // check id conditions
-              if (Utils.haveConditionMatched(node, schema.id.conditions)) {
-                entities[Utils.get(node, schema.id.name)] = {node: node, schema: schema};
+              if (Utils.haveConditionMatched(node, schema.definition.conditions)) {
+                componentId = Utils.get(node, schema.definition.id);
+                // console.log('found ' + schema.id.type + '_' + schema.id.subType, componentId);
+                entities[componentId] = {node: node, schema: schema, properties: {}};
+
+                _.forIn(schema.definition.properties, function(propertyDefinition, property) {
+                  var value = Utils.get(node, propertyDefinition.path);
+                  entities[componentId].properties[property] = value;
+                });
               }
             });
           });
 
-          console.log('finished interating first time');
-
+          // attach references
           Utils.traverse(structure, function (node) {
             _.forIn(entities, function(entity, key) {
               entity.schema.references.forEach(function(reference) {
-                if (Utils.haveConditionMatched(node, reference.conditions)) {
-                  reference.properties.forEach(function(property) {
-                    console.log(property + ':' + JSON.stringify(_.result(node, Utils.get(node, reference.properties[property].path))));
+                if (Utils.haveConditionMatched(node, reference.conditions, entity.node)) {
+                  _.forIn(reference.properties, function(propertyDefinition, property) {
+                    var value = Utils.get(node, propertyDefinition.path);
+                    entity.properties[property] = value;
                   });
                 }
               });
             });
           });
 
-                // schema.references.forEach(function(reference) {
-                //   if (reference.conditions) {
-                //     Utils.traverse(structure, function(innerNode) {
-                //       console.log('checking conditions');
-                //       if (Utils.haveConditionMatched(innerNode, reference.conditions)) {
-                //         console.log('innerNode');
-                //         Object.keys(reference.properties).forEach(function(property) {
-                //           console.log(property + ':' + JSON.stringify(_.result(innerNode, Utils.interpolate(innerNode, reference.properties[property].path))));
-                //         });
-                //       }
-                //     });
-                //   }
-                //   else {
-                //     console.log('regular node');
-                //     Object.keys(reference.properties).forEach(function(property) {
-                //       console.log(property + ':' + JSON.stringify(_.result(node, Utils.interpolate(node, reference.properties[property].path))));
-                //     });
-                //   }
-                //
-                //
-                //
-                // });
-              // }
-            // });
       } catch (e) {
         console.warn(e);
       }
 
+  });
+
+  _.forIn(entities, function(entity, key) {
+    console.log('****' + key, entity);
   });
 });

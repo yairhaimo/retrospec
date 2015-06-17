@@ -6,14 +6,13 @@ var DELIMITER = '#';
 var RESERVED_WORDS = [
   {
     word: 'last',
-    action: function(str, node) {
+    action: function(node, str) {
       var res;
-
       var delimiteredWord = DELIMITER + this.word + DELIMITER;
       var targetArray = str.substr(0, str.indexOf('[' + delimiteredWord +']'));
       var targetValue = _.result(node, targetArray);
       if (targetValue) {
-        var lastIndex = result.length - 1;
+        var lastIndex = targetValue.length - 1;
         res = str.replace(delimiteredWord, lastIndex);
       }
 
@@ -52,7 +51,7 @@ Utils.walk = function(dir, done) {
             file = dir + '/' + file;
             fs.stat(file, function (err, stat) {
                 if (stat && stat.isDirectory()) {
-                    walk(file, function (err, res) {ממש
+                    walk(file, function (err, res) {
                         results = results.concat(res);
                         next();
                     });
@@ -88,7 +87,7 @@ Utils.handleReservedWords = function(node, str) {
     reservedWordRegEx = new RegExp(DELIMITER + entry.word + DELIMITER);
     match = str.match(reservedWordRegEx);
     if (match) {
-      str = entry.action(str, node) || str;
+      str = entry.action(node, str) || str;
     }
   });
 
@@ -102,11 +101,13 @@ Utils.interpolate = function(node, value) {
   return valueMatches ? Utils.get(node, valueMatches[1]) : value;
 };
 
-Utils.haveConditionMatched = function(node, conditions) {
+Utils.haveConditionMatched = function(node, conditions, valueNode) {
   var conditionsMatched = true;
-  console.log('conditions', conditions);
+  var path, value;
   conditions.forEach(function(condition) {
-    conditionsMatched = conditionsMatched && (_.result(node, Utils.handleReservedWords(node, condition.path)) === Utils.interpolate(node, condition.value));
+    path = _.result(node, Utils.handleReservedWords(node, condition.path));
+    value = Utils.interpolate(valueNode || node, condition.value);
+    conditionsMatched = conditionsMatched && (path === value) && (path !== undefined);
   });
 
   return conditionsMatched;
@@ -115,7 +116,5 @@ Utils.haveConditionMatched = function(node, conditions) {
 Utils.get = function(node, value) {
   return _.result(node, Utils.handleReservedWords(node, value));
 };
-
-
 
 module.exports = Utils;

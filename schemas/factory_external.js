@@ -1,7 +1,8 @@
 var Utils = require('../utils');
 
 var schema = module.exports = {
-  id: {
+  definition: {
+    id: 'arguments[#last#].name',
     type: Utils.TYPES.FACTORY,
     subType: Utils.SUBTYPES.EXTERNAL,
     conditions: [
@@ -17,24 +18,22 @@ var schema = module.exports = {
         path: 'arguments[#last#].type',
         value: 'Identifier'
       }
-    ]
-  },
-  references: [
-    {
-  // base: {
-  //   path: 'declarations[0].id.name',
-  //   value: '{{arguments[#last#].name}}'
-  // },
-      conditions: [],
-      properties: {
-        name: {
-          path: 'declarations[0].id.name'
-        },
-        bodyType: {
-          path: 'declarations[0].init.body.body[0].type'
-        }
+    ],
+    properties: {
+      name: {
+        path: 'arguments[#last#].name'
       }
     }
+  },
+  references: [
+    // {
+    //   conditions: [],
+    //   properties: {
+    //     bodyType: {
+    //       path: 'declarations[0].init.body.body[0].type'
+    //     }
+    //   }
+    // }
   ]
 };
 

@@ -1,10 +1,10 @@
 var Utils = require('../utils');
 
 var schema = module.exports = {
-  type: Utils.TYPES.CONTROLLER,
-  subType: Utils.SUBTYPES.EXTERNAL,
-  id: {
-    type: 'CONTROLLER_INLINE',
+  definition: {
+    id: 'arguments[0].value',
+    type: Utils.TYPES.CONTROLLER,
+    subType: Utils.SUBTYPES.INLINE,
     conditions: [
       {
         path: 'type',
@@ -18,17 +18,22 @@ var schema = module.exports = {
         path: 'arguments[1].type',
         value: 'FunctionExpression'
       }
-    ]
-  },
-  references: [
-    {
-      conditions: [],
-      properties: {
-        name: {
-          path:'arguments[0].value'
-        }
+    ],
+    properties: {
+      name: {
+        path: 'arguments[0].value'
       }
     }
+  },
+  references: [
+    // {
+    //   conditions: [],
+    //   properties: {
+    //     name: {
+    //       path:'arguments[0].value'
+    //     }
+    //   }
+    // }
   ]
 };
 

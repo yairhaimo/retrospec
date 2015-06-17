@@ -1,8 +1,8 @@
 var Utils = require('../utils');
 
 var schema = module.exports = {
-  id: {
-    name: 'arguments[1].elements[0].value',
+  definition: {
+    id: 'arguments[1].elements[#last#].name',
     type: Utils.TYPES.FACTORY,
     subType: Utils.SUBTYPES.EXTERNAL_DI,
     conditions: [
@@ -18,7 +18,12 @@ var schema = module.exports = {
         path: 'arguments[1].type',
         value: 'ArrayExpression'
       }
-    ]
+    ],
+    properties: {
+      name: {
+        path: 'arguments[1].elements[#last#].name'
+      }
+    }
   },
   references: [
     {
@@ -34,18 +39,6 @@ var schema = module.exports = {
         },
         bodyType: {
           path: 'init.body.body[0].type'
-        }
-      }
-    },
-    {
-      conditions: [],
-      properties: {
-        name: {
-          path: 'arguments[1].elements[0].value'
-          // path: 'arguments[1].elements',
-          // transform: function(val) {
-          //   return val.splice(0, val.length-1);
-          // }
         }
       }
     }

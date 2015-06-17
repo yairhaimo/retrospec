@@ -1,7 +1,8 @@
 var Utils = require('../utils');
 
 var schema = module.exports = {
-  id: {
+  definition: {
+    id: 'arguments[0].value',
     type: Utils.TYPES.FACTORY,
     subType: Utils.SUBTYPES.INLINE,
     conditions: [
@@ -17,22 +18,23 @@ var schema = module.exports = {
         path: 'arguments[1].type',
         value: 'FunctionExpression'
       }
-    ]
+    ],
+    properties: {
+      name: {
+        path: 'arguments[0].value'
+      }
+    }
   },
   references: [
     {
-      conditions: [],
+      conditions: [
+        {
+          path: 'arguments[1].body.body[0].type',
+          value: 'ReturnStatement'
+        }
+      ],
       properties: {
-        name: {
-          path: 'arguments[0].value'
-        },
         returnStatement: {
-          conditions: [
-            {
-              path: 'arguments[1].body.body[0].type',
-              value: 'ReturnStatement'
-            }
-          ],
           path: 'arguments[1].body.body[0].argument.properties'
         }
       }
